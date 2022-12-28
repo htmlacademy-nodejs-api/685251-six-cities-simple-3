@@ -9,6 +9,14 @@ name: string;
 location: Location;
 }
 
+export type User = {
+  name: string;
+  email: string;
+  avatar: string;
+  password: string;
+  isPro: boolean;
+}
+
 export type Offer = {
 city: City;
 postDate: Date;
@@ -23,7 +31,7 @@ maxAdults: number;
 price: number;
 goods: string[];
 description: string;
-id: number;
 commentCount: number;
+user: User;
 }
 
