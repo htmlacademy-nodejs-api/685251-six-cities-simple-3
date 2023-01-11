@@ -21,7 +21,7 @@ export default class TSVFileReader extends EventEmitter implements FileReaderInt
     for await (const chunk of stream) {
       lineRead += chunk.toString();
 
-      while ((endLinePosition = lineRead.indexOf('\n')) >= 0) {
+      while (endLinePosition = lineRead.indexOf('\n'), endLinePosition >= 0) {
         const completeRow = lineRead.slice(0, endLinePosition + 1);
         lineRead = lineRead.slice(++endLinePosition);
         importedRowCount++;
