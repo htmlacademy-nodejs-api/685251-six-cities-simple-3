@@ -1,7 +1,10 @@
+import { OfferType } from './offer-type.enum.js';
+import { UserType } from './user-type.enum.js';
+
 export type Location = {
 latitude: number;
 longitude: number;
-zoom: number;
+zoom?: number;
 }
 
 export type City = {
@@ -13,25 +16,25 @@ export type User = {
   name: string;
   email: string;
   avatar: string;
-  password: string;
-  isPro: boolean;
+  userType: UserType;
 }
 
 export type Offer = {
-city: City;
+title: string;
+description: string;
 postDate: Date;
+city: City;
 previewImage: string;
 images: string[];
-title: string;
-isPremium: boolean;
+isPremium: OfferType;
 rating: number;
 type: string;
 bedrooms: number;
 maxAdults: number;
 price: number;
 goods: string[];
-description: string;
-commentCount: number;
 user: User;
+commentCount: number;
+location: Location;
 }
 

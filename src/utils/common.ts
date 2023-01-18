@@ -1,13 +1,16 @@
 import { Offer } from '../types/offer-types.js';
+import crypto from 'crypto';
+import { OfferType } from '../types/offer-type.enum.js';
+import { UserType } from '../types/user-type.enum.js';
 
 export const createOffer = (row: string) => {
   const tokens = row.replace('\n', '').split('\t');
   const [
     city, cityLat, cityLong, cityZoom,
     postDate, commentCount, previewImage,
-    images, title, isPremium, rating, type,
+    images, title, rating, type,
     bedrooms, maxAdults, price, goods, description,
-    name, email, avatar, password, isPro
+    name, email, avatar, password
   ] = tokens;
   return {
     city: {
@@ -22,7 +25,7 @@ export const createOffer = (row: string) => {
     previewImage,
     images: images.split(';'),
     title,
-    isPremium: isPremium === 'true',
+    isPremium: OfferType[type as 'Premium' | 'Normal'],
     rating: +rating,
     type: type,
     bedrooms: +bedrooms,
@@ -31,9 +34,20 @@ export const createOffer = (row: string) => {
     goods: goods.split(';'),
     description,
     commentCount: +commentCount,
-    user: {name, email, avatar, password, isPro: isPro === 'true'}
+    location: {
+      latitude: +cityLat,
+      longitude: +cityLong,
+      zoom: +cityZoom
+    },
+    user: {name, email, avatar,
+      password, userType: UserType[type as 'Pro' | 'Normal']}
   } as Offer;
 };
 
 export const getErrorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : '';
+
+export const createSHA256 = (line: string, salt: string): string => {
+  const shaHasher = crypto.createHmac('sha256', salt);
+  return shaHasher.update(line).digest('hex');
+};
