@@ -10,7 +10,7 @@ export default class Application {
   constructor(
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
-    @inject(Component.DatabaseInteface) private databaseClient: DatabaseInterface
+    @inject(Component.DatabaseInteface) private databaseClient: DatabaseInterface,
   ) {}
 
   public async init() {

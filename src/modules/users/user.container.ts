@@ -2,7 +2,7 @@ import { Container } from 'inversify';
 import { Component } from '../../types/component-types.js';
 import { UserServiceInterface } from './user-service.interface';
 import { UserEntity, UserModel } from './user.entity.js';
-import UserService from './user.service';
+import UserService from './user.service.js';
 import { types } from '@typegoose/typegoose';
 
 const userContainer = new Container();
