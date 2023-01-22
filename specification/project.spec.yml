@@ -1,0 +1,584 @@
+openapi: 3.0.2
+info:
+  title: API сервер для демо-проекта «Шесть городов».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Шесть городов».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+ - name: offers
+   description: Действия с объявлениями.
+ - name: users
+   description: Действия с пользователями.
+ - name: comments
+   description: Действия с комментариями.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе email и пароля
+
+      requestBody:
+       description: Авторизация пользователя на основе email и пароля.
+       content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userLogin'
+
+      responses:
+        "201":
+          description: Пользователь авторизован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+
+        "409":
+          description: Пользователь с таким email не существует.
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      parameters:
+        - in: header
+          name: X-Token
+          schema:
+            type: string
+            example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+
+      description: Возвращает информацию по авторизованному пользователю
+
+      responses:
+        "201":
+          description: Пользователь авторизован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь не авторизован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+  /offers/:
+    post:
+      tags:
+        - offers
+      summary: Создание предложения.
+      description: Создание предложения на основе объекта предложения.
+
+      requestBody:
+       description: Создание предложения на основе объекта предложения.
+       required: true
+       content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/offer'
+
+
+      responses:
+        "201":
+          description: Предложение создано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offerWithId'
+
+
+        "409":
+          description: Валидация предложения не пройдена. Объект предложения не создан.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+    get:
+      tags:
+        - offers
+      summary: Получить список предложений.
+      description: Получить весь список предложений.
+      responses:
+        "200":
+          description: Список предложений.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offers'
+
+  /offers/{offerId}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: number
+        required: true
+        description: ID предложения.
+
+    get:
+      tags:
+        - offers
+      summary: Возвращает предложение с идентификатором {offerId}.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: number
+            description: ID предложения.
+
+      responses:
+        "201":
+          description: Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+    put:
+      tags:
+        - offers
+      summary: Редактирование предложения с идентификатором {offerId}.
+      requestBody:
+       description: Редактирование предложения на основе объекта предложения.
+       content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/offer'
+
+      responses:
+        "201":
+          description: Предложение отредактировано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offerWithId'
+
+        "409":
+          description: Валидация предложения не пройдена. Объект предложения не изменен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    delete:
+      tags:
+        - offers
+      summary: Удаляет предложение с идентификатором {offerId}.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: number
+            description: ID предложения.
+
+      responses:
+        "200":
+          description: Предложение удалено.
+
+  /comments/{offerId}:
+    get:
+      tags:
+        - comments
+      summary: Получения списка комментариев для определённого предложения {offerId}.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: number
+            description: ID предложения.
+
+
+      responses:
+        "201":
+          description: Массив комментариев для предложения с идентификатором.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comments'
+
+
+        "409":
+          description: Ошибка   запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+    post:
+      tags:
+        - comments
+      summary: Добавление комментария
+      description: Добавление комментария
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: number
+            description: ID предложения.
+      requestBody:
+        description: Добавляет новый комментарий для предложения с идентификатором
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+        required: true
+
+      responses:
+        "200":
+          description: Массив комментариев для предложения с идентификатором.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comments'
+
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: jerry@aol.com
+
+        name:
+          type: string
+          example: Jerry
+
+        password:
+          type: string
+          example: qwerty
+
+        type:
+          type: boolean
+          example: Pro
+
+        avatar:
+          type: string
+          example: avatar.png
+
+    user:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: jerry@aol.com
+
+        name:
+          type: string
+          example: Jerry
+
+        type:
+          type: boolean
+          example: Pro
+
+        avatar:
+          type: string
+          example: avatar.png
+
+        id:
+          type: number
+          example: 1
+
+        token:
+          type: string
+          example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
+
+    userLogin:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: jerry@aol.com
+
+        password:
+          type: string
+          example: qwerty
+
+    error:
+      type: object
+
+      properties:
+        error:
+          type: string
+          example: error
+
+    offer:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: Beautiful & luxurious studio at great location
+        description:
+          type: string
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+        postDate:
+          type: string
+          example: 2022-12-31T15:20:28.611Z
+        city:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Amsterdam
+            location:
+              type: object
+              properties:
+
+                  latitude:
+                    type: number
+                    example: 52.370216
+                  longitude:
+                    type: number
+                    example: 4.895168
+                  zoom:
+                    type: number
+                    example: 10
+        previewImage:
+          type: string
+          example: preview.png
+        images:
+          type: array
+          example: [img/1.png]
+        premium:
+          type: boolean
+          example: true
+        rating:
+          type: number
+          example: 4.5
+        type:
+          type: string
+          example: apartament
+        bedrooms:
+          type: number
+          example: 2
+        maxGuests:
+          type: number
+          example: 4
+        price:
+          type: number
+          example: 120
+        goods:
+          type: array
+          example: [towels, wifi]
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 52.370216
+            longitude:
+              type: number
+              example: 4.895168
+
+    offerWithId:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: Beautiful & luxurious studio at great location
+        description:
+          type: string
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+        postDate:
+          type: string
+          example: 2022-12-31T15:20:28.611Z
+        city:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Amsterdam
+            location:
+              type: object
+              properties:
+
+                  latitude:
+                    type: number
+                    example: 52.370216
+                  longitude:
+                    type: number
+                    example: 4.895168
+                  zoom:
+                    type: number
+                    example: 10
+        previewImage:
+          type: string
+          example: preview.png
+        images:
+          type: array
+          example: [img/1.png]
+        premium:
+          type: boolean
+          example: true
+        rating:
+          type: number
+          example: 4.5
+        type:
+          type: string
+          example: apartament
+        bedrooms:
+          type: number
+          example: 2
+        maxGuests:
+          type: number
+          example: 4
+        price:
+          type: number
+          example: 120
+        goods:
+          type: array
+          example: [towels, wifi]
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 52.370216
+            longitude:
+              type: number
+              example: 4.895168
+        offerId:
+          type: number
+          example: 1
+
+    offers:
+      type: array
+
+      properties:
+        title:
+          type: string
+          example: Beautiful & luxurious studio at great location
+        description:
+          type: string
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.
+        postDate:
+          type: string
+          example: 2022-12-31T15:20:28.611Z
+        city:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Amsterdam
+            location:
+              type: object
+              properties:
+
+                  latitude:
+                    type: number
+                    example: 52.370216
+                  longitude:
+                    type: number
+                    example: 4.895168
+                  zoom:
+                    type: number
+                    example: 10
+        previewImage:
+          type: string
+          example: preview.png
+        images:
+          type: array
+          example: [img/1.png]
+        premium:
+          type: boolean
+          example: true
+        rating:
+          type: number
+          example: 4.5
+        type:
+          type: string
+          example: apartament
+        bedrooms:
+          type: number
+          example: 2
+        maxGuests:
+          type: number
+          example: 4
+        price:
+          type: number
+          example: 120
+        goods:
+          type: array
+          example: [towels, wifi]
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 52.370216
+            longitude:
+              type: number
+              example: 4.895168
+        offerId:
+          type: number
+          example: 1
+
+    comments:
+      type: array
+      properties:
+        comment:
+          type: string
+          example:
+        postDate:
+          type: string
+          example:
+        rating:
+          type: number
+          example: 3
+        user:
+          $ref: '#/components/schemas/user'
+
+    comment:
+      type: object
+      properties:
+        comment:
+          type: string
+          example:
+        rating:
+          type: number
+          example: 5
