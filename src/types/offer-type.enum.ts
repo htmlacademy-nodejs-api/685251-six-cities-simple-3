@@ -1,4 +1,6 @@
 export enum OfferType {
-  Premium = 'Premium',
-  Normal = 'Normal',
+  Apartment = 'apartment',
+  House = 'house',
+  Room = 'room',
+  Hotel = 'hotel'
 }
