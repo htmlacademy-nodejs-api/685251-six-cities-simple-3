@@ -35,16 +35,16 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop()
   public images!: string[];
 
-  @prop({
-    type: () => String,
-    enum: OfferType
-  })
+  @prop()
   public isPremium!: boolean;
 
   @prop()
   public rating!: number;
 
-  @prop()
+  @prop({
+    type: () => String,
+    enum: OfferType
+  })
   public type!: string;
 
   @prop()

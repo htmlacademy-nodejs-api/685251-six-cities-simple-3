@@ -149,3 +149,18 @@ Content-Type: application/json
   "userId" : "63c7a2133e02f8157edaa7ed",
   "rating" : "4"
 }
+###
+## Аватар
+GET http://localhost:31337/upload/ava.png HTTP/1.1
+###
+
+## Отправка аватарки пользователю
+POST http://localhost:31337/users/63c7a2133e02f8157edaa7ed/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="screen.png"
+Content-Type: image/png
+
+< C:\Users\Владислав\Desktop\OLD1\avat1.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
