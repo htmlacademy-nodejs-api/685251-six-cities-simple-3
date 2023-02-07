@@ -1,6 +1,6 @@
 import { OfferType } from '../../../types/offer-type.enum.js';
 import { City, Location } from '../../../types/offer-types.js';
-import {ArrayMinSize, IsArray, ArrayContains, IsDateString, IsEnum, IsInt, IsMongoId, Max, MaxLength, Min, MinLength, IsBoolean} from 'class-validator';
+import {ArrayMinSize, IsArray, IsDateString, IsEnum, IsInt, Max, MaxLength, Min, MinLength, IsBoolean, IsString} from 'class-validator';
 
 
 export default class CreateOfferDto {
@@ -16,6 +16,8 @@ export default class CreateOfferDto {
   public postDate!: Date;
 
   public city!: City;
+
+  @IsString()
   public previewImage!: string;
 
   @IsArray({message: 'Must be 6 photos'})
@@ -49,12 +51,9 @@ export default class CreateOfferDto {
   public price!: number;
 
   @IsArray()
-  @ArrayContains(['Breakfast', 'Air conditioning', 'Laptop friendly workspace', 'Baby seat', 'Washer', 'Towels', 'Fridge'])
   public goods!: string[];
 
-  @IsMongoId({message: 'userId field must be valid an id'})
   public userId!: string;
-
   public commentCount!: number;
   public location!: Location;
 }
