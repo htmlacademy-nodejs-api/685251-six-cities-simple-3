@@ -5,6 +5,7 @@ import { inject, injectable } from 'inversify';
 import { Controller } from '../../common/controller/controller.js';
 import HttpError from '../../common/errors/http-error.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
+import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { Component } from '../../types/component-types.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
@@ -28,7 +29,11 @@ export default class CommentController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateCommentDto)]});
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateCommentDto)
+      ]
+    });
   }
 
   public async index(req: Request, res: Response): Promise<void> {
@@ -38,21 +43,21 @@ export default class CommentController extends Controller {
   }
 
   public async create(
-    {body}: Request<object, object, CreateCommentDto>,
+    req: Request<object, object, CreateCommentDto>,
     res: Response
   ): Promise<void> {
 
-    if (!await this.offerService.exists(body.offerId)) {
+    if (!await this.offerService.exists(req.body.offerId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        `Offer with id ${body.offerId} not found.`,
+        `Offer with id ${req.body.offerId} not found.`,
         'CommentController'
       );
     }
 
-    const comment = await this.commentService.create(body);
-    await this.offerService.incCommentCount(body.offerId);
-    await this.offerService.calculateRating(body.offerId);
+    const comment = await this.commentService.create({...req.body, userId: req.user.id});
+    await this.offerService.incCommentCount(req.body.offerId);
+    await this.offerService.calculateRating(req.body.offerId);
     this.created(res, fillDTO(CommentResponse, comment));
   }
 }

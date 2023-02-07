@@ -1,3 +1,4 @@
+import { Cities } from './cities.enum.js';
 import { OfferType } from './offer-type.enum.js';
 import { UserType } from './user-type.enum.js';
 
@@ -8,7 +9,7 @@ zoom?: number;
 }
 
 export type City = {
-name: string;
+name: Cities;
 location: Location;
 }
 
@@ -37,4 +38,3 @@ user: User;
 commentCount: number;
 location: Location;
 }
-
