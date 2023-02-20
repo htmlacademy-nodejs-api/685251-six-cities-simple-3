@@ -1,1 +1,1 @@
-export const DEFAULT_AVATAR = './upload/avatar.jpg';
+export const DEFAULT_AVATAR = 'default-avatar.jpg';

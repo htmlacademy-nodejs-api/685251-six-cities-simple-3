@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
+import { ConfigInterface } from '../../common/config/config.interface.js';
 import { Controller } from '../../common/controller/controller.js';
 import HttpError from '../../common/errors/http-error.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
@@ -21,8 +22,9 @@ export default class CommentController extends Controller {
     @inject(Component.LoggerInterface) logger: LoggerInterface,
     @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
     @inject(Component.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for CommentController...');
     this.addRoute({
@@ -57,7 +59,7 @@ export default class CommentController extends Controller {
 
     const comment = await this.commentService.create({...req.body, userId: req.user.id});
     await this.offerService.incCommentCount(req.body.offerId);
-    await this.offerService.calculateRating(req.body.offerId);
+    await this.offerService.calculateRating(req.body.offerId, req.body.rating);
     this.created(res, fillDTO(CommentResponse, comment));
   }
 }

@@ -14,6 +14,16 @@ npm install
 
 В `package.json` предопределено несколько сценариев.
 
+"scripts": {
+    "start": "npm run build && node ./dist/main.js",
+    "build": "npm run clean && npm run compile",
+    "start:dev": "nodemon", <!-- npm run ts -- --files ./src/main.ts | pino-pretty --colorize --translateTime SYS:standard -->
+    "lint": "eslint src/ --ext .ts",
+    "compile": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "ts": "ts-node",
+    "mock:server": "json-server ./mocks/mock-server-data.json --host 127.0.0.1 --port 3123"
+
 #### Скомпилировать проект
 
 ```bash
@@ -61,7 +71,7 @@ npm run ts -- <Путь к модулю с ts-кодом>
 #### Запустить проект
 
 ```bash
-npm start
+npm run start:dev
 ```
 
 В процессе запуска проекта будет выполнен процесс «Сборки проекта» и запуска результирующего кода.
@@ -83,3 +93,15 @@ npm start
 ### Остальное
 
 Все остальные файлы в проекте являются служебными. Пожалуйста, не удаляйте и не изменяйте их самовольно. Только если того требует задание или наставник.
+
+### Переменные окружения
+
+PORT=31337 - порт на которому запускается приложение
+SALT=secret - соль, секретное слово для генерации хэша паролей
+DB_HOST=127.0.0.1 - на каком хосте размещаем базу MongoDB
+DB_USER=admin - логин базы MongoDB
+DB_PASSWORD=test - пароль базы MongoDB
+DB_NAME=course-njs1 - название рабочей базы
+UPLOAD_DIRECTORY=upload - директория для изображений от пользователя
+JWT_SECRET=asdhadhjk12221wkja - секретный ключ для генерации JWT
+STATIC_DIRECTORY_PATH=static - статичная директория для хранения дефолтных изображений
