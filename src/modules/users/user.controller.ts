@@ -16,6 +16,7 @@ import { createJWT, fillDTO } from '../../utils/common.js';
 import CreateUserDto from './dto/create-user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
 import LoggedUserResponse from './response/logged-user.response.js';
+import UploadUserAvatarResponse from './response/upload-user-avatar.response.js';
 import UserResponse from './response/user.response.js';
 import { UserServiceInterface } from './user-service.interface.js';
 import { JWT_ALGORITM } from './user.constant.js';
@@ -25,9 +26,9 @@ export default class UserController extends Controller {
   constructor(
     @inject(Component.LoggerInterface)logger: LoggerInterface,
     @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
-    @inject(Component.ConfigInterface) private readonly configService: ConfigInterface
+    @inject(Component.ConfigInterface) configService: ConfigInterface
   ) {
-    super(logger);
+    super(logger, configService);
     this.logger.info('Register routes for UserController...');
 
     this.addRoute({
@@ -101,16 +102,27 @@ export default class UserController extends Controller {
       { email: user.email, id: user.id}
     );
 
-    this.ok(res, fillDTO(LoggedUserResponse, {email: user.email, token}));
-  }
-
-  public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path
+    this.ok(res, {
+      ...fillDTO(LoggedUserResponse, user),
+      token
     });
   }
 
+  public async uploadAvatar(req: Request, res: Response) {
+    const {userId} = req.params;
+    const uploadFile = {avatar: req.file?.filename};
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, fillDTO(UploadUserAvatarResponse, uploadFile));
+  }
+
   public async checkAuthenticate(req: Request, res: Response) {
+    if (!req.user) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unathorized',
+        'User Controller'
+      );
+    }
     const user = await this.userService.findByEmail(req.user.email);
 
     this.ok(res, fillDTO(LoggedUserResponse, user));

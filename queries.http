@@ -121,8 +121,7 @@ POST http://localhost:31337/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "toran@overlook.net",
-  "avatar": "torrance.png",
+  "email": "toranss1234@overlook.net",
   "name": "Jack",
   "password": "shining",
   "userType": "Pro"
@@ -135,7 +134,7 @@ POST http://localhost:31337/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "toran@overlook.net",
+  "email": "toranss123@overlook.net",
   "password": "shining"
 }
 
@@ -144,10 +143,11 @@ Content-Type: application/json
 
 GET http://localhost:31337/users/login HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc3MxMkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZWRmODQ0ZjcyMWMwYTkyNjk4MjMzMiIsImlhdCI6MTY3NjU1NjU0NiwiZXhwIjoxNjc2NzI5MzQ2fQ.iJ8xwxZ_VgkDjWoa-XW6ThwOVZ0pwzBIr0oRvA3BthM
 
 {
-  "email": "torans@overlook.net",
-  "password": "123456"
+  "email": "toranss12@overlook.net",
+  "password": "shining"
 }
 
 # Комментарий

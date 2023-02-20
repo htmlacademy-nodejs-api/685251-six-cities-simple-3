@@ -6,7 +6,6 @@ export default class CreateUserDto {
   @IsEmail({}, {message: 'must be valid email'})
   public email!: string;
 
-  @IsString({message: 'avatar is required'})
   public avatar!: string;
 
   @IsString({message: 'name is required'})
